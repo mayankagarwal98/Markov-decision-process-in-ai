@@ -6,51 +6,6 @@ def float_round(num, places=0, direction=floor):
     return direction(num * (10**places)) / float(10**places)
 
 
-def print_value(ANS):
-    for i in range(0, n):
-        for j in range(0, m):
-            ANS[i][j] = float_round(ANS[i][j], 3, round)
-            print(ANS[i][j]),
-        print("")
-    policy = [[0] * m for _ in range(0, n)]
-    for i in range(0, n):
-        for j in range(0, m):
-            highest = -100000000000000000
-            if(wall[i][j] == 1):
-                policy[i][j] = "W"
-                continue
-            if(endstates[i][j] == 1):
-                if a[i][j] > 0:
-                    policy[i][j] = "G"
-                else:
-                    policy[i][j] = "E"
-                continue
-            if(i != 0):
-                if(wall[i - 1][j] == 0):
-                    if(highest <= ANS[i - 1][j]):
-                        highest = ANS[i - 1][j]
-                        policy[i][j] = "^"
-            if(i != n - 1):
-                if(wall[i + 1][j] == 0):
-                    if(highest <= ANS[i + 1][j]):
-                        highest = ANS[i + 1][j]
-                        policy[i][j] = "v"
-            if(j != 0):
-                if(wall[i][j - 1] == 0):
-                    if(highest <= ANS[i][j - 1]):
-                        highest = ANS[i][j - 1]
-                        policy[i][j] = "<"
-            if(j != m - 1):
-                if(wall[i][j + 1] == 0):
-                    if(highest <= ANS[i][j + 1]):
-                        highest = ANS[i][j + 1]
-                        policy[i][j] = ">"
-    for i in range(0, n):
-        for j in range(0, m):
-            print(policy[i][j]),
-        print("")
-
-
 def VALUE_ITERATION(n, m, matrix, endstates, wall, step_reward):
     iteration_count = 0
     discount_factor = 0.99
@@ -127,11 +82,9 @@ def VALUE_ITERATION(n, m, matrix, endstates, wall, step_reward):
                     delta = abs((U1[i][j] - U[i][j]) / U1[i][j])
         # print(U)
         iteration_count += 1
-        print("Iteration Number->>", iteration_count)
-        print("Trace>>")
-        print_value(U)
         if delta < 0.01:
             break
+    print str("Iteration Count :- ")+str(iteration_count)
     return U
 
 
@@ -172,4 +125,46 @@ initial_x1, initial_y1 = [int(x) for x in raw_input().split()]
 step_reward = float(input())
 
 ANS = VALUE_ITERATION(n, m, a, endstates, wall, step_reward)
-# print_value(ANS)
+
+for i in range(0, n):
+    for j in range(0, m):
+        ANS[i][j] = float_round(ANS[i][j], 3, round)
+        print(ANS[i][j]),
+    print("")
+policy = [[0] * m for _ in range(0, n)]
+for i in range(0, n):
+    for j in range(0, m):
+        highest = -100000000000000000000000
+        if(wall[i][j] == 1):
+            policy[i][j] = "W"
+            continue
+        if(endstates[i][j] == 1):
+            if a[i][j] > 0:
+                policy[i][j] = "G"
+            else:
+                policy[i][j] = "E"
+            continue
+        if(i != 0):
+            if(wall[i - 1][j] == 0):
+                if(highest <= ANS[i - 1][j]):
+                    highest = ANS[i - 1][j]
+                    policy[i][j] = "^"
+        if(i != n - 1):
+            if(wall[i + 1][j] == 0):
+                if(highest <= ANS[i + 1][j]):
+                    highest = ANS[i + 1][j]
+                    policy[i][j] = "v"
+        if(j != 0):
+            if(wall[i][j - 1] == 0):
+                if(highest <= ANS[i][j - 1]):
+                    highest = ANS[i][j - 1]
+                    policy[i][j] = "<"
+        if(j != m - 1):
+            if(wall[i][j + 1] == 0):
+                if(highest <= ANS[i][j + 1]):
+                    highest = ANS[i][j + 1]
+                    policy[i][j] = ">"
+for i in range(0, n):
+    for j in range(0, m):
+        print(policy[i][j]),
+    print("")
